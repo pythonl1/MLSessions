@@ -1,0 +1,269 @@
+Day 1 ML
+
+@Data  Exploration techniques:
+
+	1. Dimensionality Check (df.shape)
+
+	2. Type of Dataset (type(df) - for data type of dataframe(same for every dataframe) / df[colname].dtype - for the data type of the particular column)
+	
+	3. Slicing and Indexing (df.iloc[x:y] - slice  only rows / df.iloc[x:y,a:b]  - slice both row and column) 
+
+	4. Identifying Unique Elements (df[colname].unique())
+
+	5. Value Extraction (df[colname].values())
+
+	6. Mean, Median and Mode (df.mean() / df[colname].mean(), df.median() / df[colname].median(), df.mode(axis=0) - for columns / df.mode(axis=1) - for rows)
+
+
+@Seaborn:
+	Installation - pip install seaborn
+
+	#code 
+	import matplotlib.pyplot as plt
+	import seaborn as sns
+	correlations = df.corr()
+	# 1. data - Rectangular dataset(2D dataset that can be coerced into ndarray)
+	# 2. square - if True, set Axes aspect to "equal" so that each cell will be  square shaped
+	# 3. cmap - Matplotlib colormap name,object  or list of colors
+	sns.heatmap(data =  correlations, square = True, cmap  ="bwr") 
+
+
+	plt.yticks(rotation=0)
+	plt.xticks(rotation=90)
+
+
+@Correlation Analysis Steps:
+
+	1. Read Data.
+		i. import pandas and read the file:
+			
+			import  pandas  as pd
+			df =  pd.readf = pd.read_csv('test.csv')
+
+	2. Describe Data.
+		i. Use describe function to statistically explore each variable - shows  count, mean, std, min and max values for all the columns:
+			
+			df.describe()
+
+	3. Find correlation between the relevant variables.
+		i. Extract relevant variables and group them with  respect to each other:
+		   (Optional) - Use unstack() function to represent the data in a  different way.
+			
+			df[['colname1', 'colname2', ...]].groupby(['colname']).describe().unstack()
+
+		ii. Use corr() function  get the  correlations between the relvant variables:
+
+			df[['colname1', 'colname2', ...]].corr()
+
+
+@Data Wrangling:
+	
+	1. Method  of manually  converting or mapping data from one raw format into antoher format.
+		-> Includes munging and Data Visualisation.
+
+
+	2. Different tasks:
+		-> Discovering - Uncovering or extracting features.
+		-> Structuring - Mapping extracted features  to actual feature set.
+		-> Cleaning - Refining data to make it more accurate.  
+		-> Enrichment - Adding features to make data more informative.
+		-> Validating - Defining whether data has some missing or wrong information.
+
+	3. Why Data Wrangling is required:
+		-> Missing Data
+		-> Presence of noisy data
+		-> Inconsistent data
+
+	4. Pros of Data Wrangling:
+		-> Helps develop amore accurate model and prediction out of data.
+		-> Prevents data leakage by ensuring that data is secure and accurate. 
+
+
+	5. How to handle missing value?:
+
+		1. Detect missing data:
+
+			df.isna().any() - Boolean output (True(Some rows for the column missing data) / False)
+
+		2. Missing Value Treatment:
+
+			i. Mean Imputation: 
+				Replace the missing value with variable's mean.
+
+				from sklearn.preprocessing import Imputer
+				mean_imputer = Imputer(missing_values=np.nan, strategy='mean', axis=1)
+				mean_imputer= mean_imputer.fit(df)
+				imputed_df =  mean_imputer.transform(df.values)
+				df = pd.DataFrame(data=imputed_df, columns=cols)
+
+			ii. Median Imputation:
+				Replace the missing value with variable's  median.
+
+				from sklearn.preprocessing import Imputer
+				median_imputer = Imputer(missing_values=np.nan, strategy='median', axis=1)
+				median_imputer= median_imputer.fit(df)
+				imputed_df =  median_imputer.transform(df.values)
+				df = pd.DataFrame(data=imputed_df, columns=cols)
+
+
+			# IMPORTANT: Mean/Median Imputation is model dependent and only applicable on numerical data. 
+
+	6. Outlier Values in a  Dataset:
+
+
+		1. Value that lies outside the usual observation of Values.
+
+
+		2. Detect  Outliers:
+
+			import seaborn as sns
+			sns.boxplot(x=df['Assignment'])
+
+		3. Outlier Treatment:
+
+			i. Create a filter based on the boxplot obtained and apply the filter to the dataframe.
+
+				filter = df['Assignment'].values>60
+				df_outlier_rem = df[filter]
+
+
+@Data Manipulation
+
+	#data manipulation involves  performing some operations on data in order to gather some specific information from the data.
+
+			MANIPULATE OBJECTS ==> MANIPULATE DATA
+
+	A data object is a two-dimensional data structure, i.e. data is aligned in tabular fashion in rows and columns.
+
+
+	1. Different Data Objects:
+
+		i. head() - returns first n rows of  the data structure. (Index starts from zero)
+
+			example: 
+				
+				code:
+					import pandas as pd
+					import numpy as np
+					
+					df = pd.Series(np.arange(1,51))
+					print(df.head(6))
+				
+				output:
+					Index		Value
+					0			1
+					1			2
+					2			3
+					3			4
+					4			5
+					5			6
+					dtype: int64
+
+		ii. tail() - returns the last n rows of the  data structure. (Index ends at (number of rows-1))
+
+			example: 
+
+				code:
+					import pandas as pd
+					import numpy as np
+					
+					df = pd.Series(np.arange(1,51))
+					print(df.tail(6))
+				
+				output:
+					Index		Value
+					44			45
+					45			46
+					46			47
+					47			48
+					48			49
+					49			50
+					dtype: int64
+
+		iii. values() - returns the actual data in the series of the array 
+						(returns all the values between start and end except the end)
+
+			example: 
+				
+				code:
+					import pandas as pd
+					import numpy as np
+					
+					df = pd.Series(np.arange(1,51))
+					print(df.values)
+				
+				output:
+					[1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23	24	25
+					 26	27	28	29	30	31	32	33	34	35	36	37	38	39	40	41	42	43	44	45	46	47	48	49	50]
+
+		iv. groupby() - group the data frame according to a given condition.
+
+		v. concatenation - combines two or more data structures. (1. axis=1 - combine using columns. 
+																  2. axis=0 combine using rows)
+
+			syntax:
+
+				code:  
+					pandas.concat(df1,df2,axis=1)
+
+		vi. merging - same as concatanation but needs to have a common column between two or more datasets or tables.
+						(Note: Difference ---> MERGING is performed using databse joins, whereas CONCATENATION combines two or more data frames that do not have any relationship)
+
+			syntax:
+
+				code:
+					pandas.merge(df1,df2,on='col name')
+
+		vii. Different types of Join: - Joins are used to combine records from two or more tables in a database.
+
+			#A join always locates related column values in the two tables.
+
+			Types:
+
+				1. Left Join - returns all rows from the left table, even if there are no matches in the right table.
+
+					syntax:
+
+						pandas.merge(df1,df2,on='col name',how='left')
+
+				2. Right Join - returns all rows from the right table, even if there are no matches in the left table.
+								(Preserves the unmatched rows from the second(right) table, joining them with a NULL in the shape of the first(left) table.)
+
+					syntax:
+
+						pandas.merge(df1,df2,on='col name',how='right')
+
+				3. Inner Join - selects all the rows from both tables if there is a matc between the columns. 
+								If no values matches it will return null.
+
+					syntax:
+
+						pandas.merge(df1,df2,on='col name',how='inner')
+
+				4. Full Outer Join - returns all records when there is a match in either left or right table records.
+
+					syntax:
+
+						pandas.merge(df1,df2,on='col name',how='outer')
+
+		viii. Typecasting: - converts the data type of an object to the required data type.
+
+			1. string()
+
+			2. int()
+
+			3. float()
+
+			Different types of typecasting:
+
+				1. Implicit - happens without programmers effort and is done to simplify coding.
+
+				2. Explicit - primarily done to reuse the code and DRY programming.
+
+
+
+
+
+
+
+
